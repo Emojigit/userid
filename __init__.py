@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 __author__ = "Emoji"
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __url__ = "https://github.com/Emojigit/userid"
 __description__ = "Get ids of user, message, etc."
 __dname__ = "userid"
@@ -19,3 +19,17 @@ def setup(bot):
         await event.respond(resp)
         raise events.StopPropagation
 
+    @bot.on(events.NewMessage(pattern='/uidlink'))
+    async def start(event):
+
+        try:
+            i = int(event.text.split(" ",1)[1])
+            if i < 1: # -xxxxx is channel or group!
+                raise ValueError
+        except ValueError:
+            await event.respond("Not a valid user id!")
+        except IndexError:
+            await event.respond("No id given!")
+        else:
+            await event.respond("[{id}](tg://user?id={id})".format(id=i))
+        raise events.StopPropagation
